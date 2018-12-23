@@ -93,17 +93,20 @@ public class ImageController {
     //This string is then displayed by 'edit.html' file as previous tags of an image
     @RequestMapping(value = "/editImage")
     public String editImage(@RequestParam("imageId") Integer imageId, Model model,HttpSession session) {
-        Image image = imageService.getImage(imageId);
         User user = (User) session.getAttribute("loggeduser");
+        Image image = imageService.getImage(imageId);
+        String tags=convertTagsToString(image.getTags());
         model.addAttribute("image", image);
-        model.addAttribute("tags", image.getTags() );
         if(image.getUser().getId()!=user.getId()){
-            model.addAttribute("editError",true);
+            model.addAttribute("tags", image.getTags());
+            model.addAttribute("editError","Only the owner of the image can edit the image");
             return "images/image";}
         else{
+            model.addAttribute("tags", tags);
             return "images/edit";
         }
     }
+
 
     //This controller method is called when the request pattern is of type 'images/edit' and also the incoming request is of PUT type
     //The method receives the imageFile, imageId, updated image, along with the Http Session
@@ -150,7 +153,7 @@ public class ImageController {
         if(image.getUser().getId()!=user.getId()){
             model.addAttribute("image", image);
             model.addAttribute("tags", image.getTags());
-            model.addAttribute("deleteError",true);
+            model.addAttribute("deleteError","Only the owner of the image can delete the image");
             return "images/image";}
         imageService.deleteImage(imageId);
         return "redirect:/images";

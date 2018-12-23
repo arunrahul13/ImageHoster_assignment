@@ -44,9 +44,9 @@ public class UserController {
     public String registerUser(User user,Model model) {
         if(user.getPassword().matches(".*[0-9].*")&&user.getPassword().matches(".*[A-z].*")&&user.getPassword().matches(".*[^0-9A-z].*")) {
             userService.registerUser(user);
-            return "redirect:/users/login";
+            return "users/login";
         }else{
-            model.addAttribute("passwordTypeError", true);
+            model.addAttribute("passwordTypeError", "Password must contain atleast 1 alphabet, 1 number & 1 special character");
             model.addAttribute("User",user);
             return "/users/registration";
         }

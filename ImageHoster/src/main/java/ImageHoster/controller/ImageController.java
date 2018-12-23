@@ -95,9 +95,8 @@ public class ImageController {
     public String editImage(@RequestParam("imageId") Integer imageId, Model model,HttpSession session) {
         Image image = imageService.getImage(imageId);
         User user = (User) session.getAttribute("loggeduser");
-        String tags = convertTagsToString(image.getTags());
         model.addAttribute("image", image);
-        model.addAttribute("tags", tags);
+        model.addAttribute("tags", image.getTags() );
         if(image.getUser().getId()!=user.getId()){
             model.addAttribute("editError",true);
             return "images/image";}
@@ -148,10 +147,9 @@ public class ImageController {
     public String deleteImageSubmit(@RequestParam(name = "imageId") Integer imageId, Model model,HttpSession session) {
         User user = (User) session.getAttribute("loggeduser");
         Image image = imageService.getImage(imageId);
-        String tags = convertTagsToString(image.getTags());
         if(image.getUser().getId()!=user.getId()){
             model.addAttribute("image", image);
-            model.addAttribute("tags", tags);
+            model.addAttribute("tags", image.getTags());
             model.addAttribute("deleteError",true);
             return "images/image";}
         imageService.deleteImage(imageId);
